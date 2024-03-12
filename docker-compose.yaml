@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
   bootnode:
@@ -11,7 +11,6 @@ services:
     hostname: bootnode
     networks:
       - eth-network
-    
 
   alice:
     build:
@@ -23,6 +22,9 @@ services:
     hostname: alice
     networks:
       - eth-network
+    restart: on-failure
+    depends_on:
+      - bootnode
 
   bob:
     build:
@@ -34,17 +36,20 @@ services:
     hostname: bob
     networks:
       - eth-network
+    restart: on-failure
+    depends_on:
+      - bootnode
 
-  carl:
-    build:
-      dockerfile: ./dockerfiles/miners/Dockerfile
-      args:
-        - ACCOUNT_PASSWORD=carl
-    command: --bootnodes="enode://ab15e2bfbe7dcc525076f1763f030678d020eb7af6044f644cbb03d6d1095426fa39d10747dd2b7b9b40b89565964f48d4433aa00326495da78426937fce9bc4@bootnode:30303" --mine --miner.threads=1 --networkid=123454321 --netrestrict="172.16.254.0/28"
-    container_name: carl
-    hostname: carl
-    networks:
-      - eth-network
+  # carl:
+  #   build:
+  #     dockerfile: ./dockerfiles/miners/Dockerfile
+  #     args:
+  #       - ACCOUNT_PASSWORD=carl
+  #   command: --bootnodes="enode://ab15e2bfbe7dcc525076f1763f030678d020eb7af6044f644cbb03d6d1095426fa39d10747dd2b7b9b40b89565964f48d4433aa00326495da78426937fce9bc4@bootnode:30303" --mine --miner.threads=1 --networkid=123454321 --netrestrict="172.16.254.0/28"
+  #   container_name: carl
+  #   hostname: carl
+  #   networks:
+  #     - eth-network
 
 networks:
   eth-network:
