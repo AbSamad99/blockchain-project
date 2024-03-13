@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity ^0.7.0;
+pragma experimental ABIEncoderV2;
 
 /// @title Banking Applicaion
 
@@ -199,8 +200,4 @@ contract Bank {
     //     }
     //     selfdestruct(payable(bankManager));
     // }
-
-    fallback() external payable {}
-
-    receive() external payable {}
 }
