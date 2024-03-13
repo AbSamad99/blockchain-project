@@ -1,7 +1,6 @@
 var deployedContract = contract.new({
   data: bytecode,
   from: eth.accounts[0],
-  gas: 2000000,
 });
 
 while (eth.getTransactionReceipt(deployedContract.transactionHash) === null) {
