@@ -122,17 +122,15 @@ contract MessageBoard {
         post.body = body;
     }
 
-    function deletePost(
-        uint256 postId
-    )
-        public
-        requireSignup
-        verifyPostExists(postId)
-        verifyPostOwnerShip(postId)
-    {
-        Post memory post;
-        posts[postId] = post;
-    }
+    // function deletePost(uint256 postId)
+    //     public
+    //     requireSignup
+    //     verifyPostExists(postId)
+    //     verifyPostOwnerShip(postId)
+    // {
+    //     Post memory post;
+    //     posts[postId] = post;
+    // }
 
     function createPostComment(
         uint256 postId,
@@ -189,16 +187,14 @@ contract MessageBoard {
         comments.push(comment);
     }
 
-    function deletePostComment(
-        uint256 commentId
-    )
-        public
-        requireSignup
-        verifyCommentExists(commentId)
-        verifyCommentOwnerShip(commentId)
-    {
-        posts[comments[commentId].postId].commentsCount--;
-        Comment memory comment;
-        comments[commentId] = comment;
-    }
+    // function deletePostComment(uint256 commentId)
+    //     public
+    //     requireSignup
+    //     verifyCommentExists(commentId)
+    //     verifyCommentOwnerShip(commentId)
+    // {
+    //     posts[comments[commentId].postId].commentsCount--;
+    //     comments[commentId] = comments[comments.length-1];
+    //     comments.pop();
+    // }
 }
