@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.7.0;
-pragma experimental ABIEncoderV2;
+pragma solidity ^0.8.0;
 
 contract MessageBoard {
     struct Post {
@@ -34,9 +33,19 @@ contract MessageBoard {
         _;
     }
 
-    modifier verifyPostParams(string memory title, string memory body) {
-        require(bytes(title).length > 0, "Title cannot be empty");
-        require(bytes(body).length > 0, "Body cannot be empty");
+    modifier verifyTitleLength(string memory title) {
+        require(
+            bytes(title).length > 5 && bytes(title).length < 30,
+            "Title must be between 5 and 30 characters in length"
+        );
+        _;
+    }
+
+    modifier verifyBodyLength(string memory body) {
+        require(
+            bytes(body).length > 10 && bytes(body).length < 150,
+            "Body must be between 10 and 150 characters in length"
+        );
         _;
     }
 
@@ -88,7 +97,8 @@ contract MessageBoard {
     function createPost(
         string memory title,
         string memory body
-    ) public requireSignup verifyPostParams(title, body) {
+    ) public requireSignup verifyTitleLength(title) verifyBodyLength(body) {
+        users[msg.sender].postIds.push(posts.length);
         Post memory post;
         post.title = title;
         post.body = body;
@@ -102,6 +112,17 @@ contract MessageBoard {
         return posts[postId];
     }
 
+    function getAllPostsByAddress(
+        address author
+    ) public view returns (Post[] memory) {
+        uint256 length = users[author].postIds.length;
+        Post[] memory _posts = new Post[](length);
+        for (uint256 i = 0; i < length; i++) {
+            _posts[i] = posts[users[author].postIds[i]];
+        }
+        return _posts;
+    }
+
     function getAllPosts() public view returns (Post[] memory) {
         return posts;
     }
@@ -113,7 +134,8 @@ contract MessageBoard {
     )
         public
         requireSignup
-        verifyPostParams(title, body)
+        verifyTitleLength(title)
+        verifyBodyLength(body)
         verifyPostExists(postId)
         verifyPostOwnerShip(postId)
     {
@@ -135,8 +157,7 @@ contract MessageBoard {
     function createPostComment(
         uint256 postId,
         string memory body
-    ) public requireSignup verifyPostExists(postId) {
-        require(bytes(body).length > 0, "Body cannot be empty");
+    ) public requireSignup verifyBodyLength(body) verifyPostExists(postId) {
         Comment memory comment;
         comment.postId = postId;
         comment.body = body;
@@ -178,11 +199,11 @@ contract MessageBoard {
     )
         public
         requireSignup
+        verifyBodyLength(body)
         verifyCommentExists(commentId)
         verifyCommentOwnerShip(commentId)
     {
-        require(bytes(body).length > 0, "Body cannot be empty");
-        Comment storage comment;
+        Comment memory comment;
         comment.body = body;
         comments.push(comment);
     }
